@@ -1,7 +1,7 @@
 const TelegramBot = require( 'node-telegram-bot-api' );
 const cmds = require( './comandos' );
 
-const bot = new TelegramBot( '308000529:AAFTfzOJEI3SVn8M-9gSYQoWrzzAlCTGgKc', {polling: true});
+const bot = new TelegramBot( 'xx', {polling: true});
 
 const agruparLinhas = ( lista, linhas = 10 ) => {
 	let retorno = [];
@@ -54,8 +54,9 @@ const envioLista = ( id, lista, idx ) => {
 };
 
 bot.on( 'message', ( msg ) => {
+	console.log( msg.message_id, ( msg.chat.type === 'private' ? 'PVT' : msg.chat.id ), msg.from.username, msg.text );
 	const parametros = msg.text.split( ' ' );
-	const comando = parametros.shift().substring( 1 );
+	const comando = ( parametros.shift().substring( 1 ) || '' ).split( '@' )[0];
 
 	if ( typeof cmds[comando] === 'undefined' || cmds[comando].exec  === 'undefined' ) {
 		let resposta = `Oi @${msg.from.username}\nO comando digitado não foi reconhecido\n\nTente:\n`;
