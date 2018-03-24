@@ -1,0 +1,16 @@
+{
+  "name": "rhc-agenda-bot",
+  "version": "0.1.0",
+  "description": "Bot para listar agenda do raul",
+  "contributors": [
+    {
+      "name": "Bruno Murta Tuy",
+      "email": "bruno@tuy.com.br"
+    }
+  ],
+  "dependencies": {
+    "node-telegram-bot-api": "^0.27.0",
+    "request": "^2.81.0"
+  },
+  "main": "main.js"
+}
