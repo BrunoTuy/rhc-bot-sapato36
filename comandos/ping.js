@@ -1,1 +1,1 @@
-module.exports = { exec: ( params, resp ) => resp( ' ~~ Pong ~~ ' ) };
+module.exports = { exec: ({ callback }) => callback( ' ~~ Pong ~~ ' ) };

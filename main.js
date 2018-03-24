@@ -1,7 +1,8 @@
 const TelegramBot = require( 'node-telegram-bot-api' );
 const cmds = require( './comandos' );
+const config = require( './config.json' );
 
-const bot = new TelegramBot( '308000529:AAGLx0jtAgJ0xbL-jheLSm2zaa-_MFrg7Og', {polling: true});
+const bot = new TelegramBot( config.tokenBot, {polling: true});
 
 const agruparLinhas = ( lista, linhas = 10 ) => {
 	let retorno = [];
@@ -54,7 +55,7 @@ const envioLista = ( id, lista, idx ) => {
 };
 
 bot.on( 'message', ( msg ) => {
-	console.log( msg.message_id, ( msg.chat.type === 'private' ? 'PVT' : msg.chat.id ), msg.from.username, msg.text );
+	console.log( msg.message_id, ( msg.chat.type === 'private' ? 'PVT' : '' ), msg.chat.id, msg.from.username, msg.text );
 
 	if ( !msg.text ) {
 		return;
@@ -76,6 +77,12 @@ bot.on( 'message', ( msg ) => {
 	}
 
 	else {
-		cmds[comando].exec( parametros, ( resp ) => envio( msg.chat.id, resp ) );
+		cmds[comando].exec({
+			bot,
+			config,
+			parametros,
+			original: msg,
+			callback: ( resp ) => envio( msg.chat.id, resp )
+		});
 	}
 });

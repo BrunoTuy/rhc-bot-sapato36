@@ -30,23 +30,23 @@ const buscarAgenda = ( dataInicial, onOK, onErro ) => request({
 	}
 });
 
-const executarComando = ( params, fnResp ) => {
-	if ( params.length === 0 || [ 'proximos', 'mes', 'ano' ].indexOf( params[0] ) < 0 ) {
-		fnResp( 'Sintaxe do comando esta errada.\n\n /agenda proximos - vou te listar os proximos eventos \n /agenda mes - vou te listar os eventos deste mês \n /agenda ano - vou te listar os eventos deste ano' );
+const executarComando = ({ parametros, callback }) => {
+	if ( parametros.length === 0 || [ 'proximos', 'mes', 'ano' ].indexOf( parametros[0] ) < 0 ) {
+		callback( 'Sintaxe do comando esta errada.\n\n /agenda proximos - vou te listar os proximos eventos \n /agenda mes - vou te listar os eventos deste mês \n /agenda ano - vou te listar os eventos deste ano' );
 	}
 
 	else {
-		const data = getData( params[0] );
-		const onError = () => fnResp( 'Erro conectando com a agenda, tente novamente mais tarde!' );
+		const data = getData( parametros[0] );
+		const onError = () => callback( 'Erro conectando com a agenda, tente novamente mais tarde!' );
 		const onOk = ( lista ) => {
 			if ( lista.length === 0 ) {
-				fnResp( `Nenhum evento a partir de ${data}` );
+				callback( `Nenhum evento a partir de ${data}` );
 			}
 
 			else {
 				const linhas = lista.map( evt => `${evt.dataIni} as ${evt.horaIni} - ${evt.title}` );
 
-				fnResp( linhas.concat( `\n${lista.length} eventos encontrados a partir de ${data}` ) );
+				callback( linhas.concat( `\n${lista.length} eventos encontrados a partir de ${data}` ) );
 			}
 		}
 
