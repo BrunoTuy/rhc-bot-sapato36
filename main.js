@@ -55,7 +55,7 @@ const envioLista = ( id, lista, idx ) => {
 };
 
 bot.on( 'message', ( msg ) => {
-	console.log( msg.message_id, ( msg.chat.type === 'private' ? 'PVT' : '' ), msg.chat.id, msg.from.username, msg.text );
+	console.log( msg.message_id, ( msg.chat.type === 'private' ? 'PVT' : 'GRP' ), msg.chat.id, msg.from.username, msg.text );
 
 	if ( !msg.text ) {
 		return;
