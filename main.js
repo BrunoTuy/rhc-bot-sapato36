@@ -65,10 +65,10 @@ bot.on( 'message', ( msg ) => {
 	const comando = parametros.shift().substring( 1 ).split( '@' )[0];
 
 	if ( typeof cmds[comando] === 'undefined' || cmds[comando].exec  === 'undefined' ) {
-		let resposta = `Oi @${msg.from.username}\nO comando digitado não foi reconhecido\n\nTente:\n`;
+		let resposta = `Oi @${msg.from.first_name}\nO comando digitado não foi reconhecido\n\nTente:\n`;
 
 		for ( key in cmds ) {
-			if ( cmds[key] ) {
+			if ( cmds[key] && !cmds[key].ocultar ) {
 				resposta += `/${key}\n`
 			}
 		}
