@@ -30,9 +30,17 @@ const buscarAgenda = ( dataInicial, onOK, onErro ) => request({
 	}
 });
 
-const executarComando = ({ parametros, callback }) => {
-	if ( parametros.length === 0 || [ 'proximos', 'mes', 'ano' ].indexOf( parametros[0] ) < 0 ) {
-		callback( 'Sintaxe do comando esta errada.\n\n /agenda proximos - vou te listar os proximos eventos \n /agenda mes - vou te listar os eventos deste mês \n /agenda ano - vou te listar os eventos deste ano' );
+const executarComando = ({
+	comando,
+	callback,
+	parametros,
+}) => {
+	if ( parametros.length === 0 ) {
+		parametros.push( 'proximos' );
+	}
+
+	if ( [ 'proximos', 'mes', 'ano' ].indexOf( parametros[0] ) < 0 ) {
+		callback( `Comandos que são entendidos.\n\n /${comando} - vou te listar os proximos eventos \n /${comando} mes - vou te listar os eventos deste mês \n /${comando} ano - vou te listar os eventos deste ano` );
 	}
 
 	else {
@@ -55,5 +63,6 @@ const executarComando = ({ parametros, callback }) => {
 };
 
 module.exports = {
+	alias: [ 'eventos' ],
 	exec: executarComando
 };

@@ -9,6 +9,10 @@ fs
 		const obj = require(path.join(__dirname, file));
 		const name = file.substring( 0, file.length-3 );
 
+		if ( obj.alias ) {
+			obj.alias.forEach( alias => list[alias] = obj );
+		}
+
 		list[name] = obj;
 	});
 

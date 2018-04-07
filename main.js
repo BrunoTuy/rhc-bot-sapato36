@@ -80,6 +80,7 @@ bot.on( 'message', ( msg ) => {
 		cmds[comando].exec({
 			bot,
 			config,
+			comando,
 			parametros,
 			original: msg,
 			callback: ( resp ) => envio( msg.chat.id, resp )
