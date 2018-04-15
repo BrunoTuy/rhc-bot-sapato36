@@ -1,1 +1,1 @@
-module.exports = { exec: ({ callback }) => callback( 'Bot do Raul Hacker Club\nFeito para facilitar o acesso a agenda de eventos do hacker club\nhttp://raulhc.cc/Agenda/\n\nDesenvolvido em nodeJS\n\nFontes https://github.com/raulhackerclub/rhc-bot' ) };
+module.exports = { exec: ({ callback }) => callback( 'Bot do Raul Hacker Club\n\nDesenvolvido em nodeJS\n\nFontes https://github.com/BrunoTuy/rhc-bot-sapato36' ) };
