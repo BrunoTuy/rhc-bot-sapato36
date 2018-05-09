@@ -1,10 +1,16 @@
 const TelegramBot = require( 'node-telegram-bot-api' );
+const lowdb = require( 'lowdb' );
+const FileSync = require( 'lowdb/adapters/FileSync' );
 const cmds = require( './comandos' );
 const config = require( './config.json' );
 
 const bot = new TelegramBot( config.tokenBot, {polling: true});
+const adapter = new FileSync( './banco.json' );
+const db = lowdb( adapter );
 
 const enviar = require( './lib/enviarMensagemBot.js' )( bot );
+
+//db.defaults({ extrato: [] }).write();
 
 bot.on( 'message', ( msg ) => {
 	console.log( msg.message_id, ( msg.chat.type === 'private' ? 'PVT' : 'GRP' ), msg.chat.id, msg.from.username, msg.text );
@@ -37,6 +43,7 @@ bot.on( 'message', ( msg ) => {
 
 	if ( comando && cmds[comando] && cmds[comando].exec ) {
 		cmds[comando].exec({
+			db,
 			bot,
 			config,
 			comando,

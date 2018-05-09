@@ -97,19 +97,25 @@ const pdfToText = ({
 		return;
 	}
 
-	pdfUtil.pdfToText( parametros.shift().file_downloaded, {}, ( err, data ) => {
-		if ( err ) {
-			console.log( ' --- Erro processando PDF', err );
-			callback( 'Não conseguimos processar o arquivo enviado.', true );
+	console.log( 'parametros', parametros );
 
-			return;
+	pdfUtil.pdfToText( parametros.shift().file_downloaded, {}, async ( err, data ) => {
+		try {
+			if ( err ) {
+				throw ( err );
+			}
+
+			callback( data );
 		}
-
-		callback( data );
+		catch ( e ) {
+			console.log( ' --- Erro processando PDF.catch', e );
+			callback( 'Não conseguimos processar o arquivo enviado.', true );
+		}
 	});
 };
 
 const download = ({
+	bot,
 	config,
 	callback,
 	parametros,
@@ -121,20 +127,25 @@ const download = ({
 	}
 
 	const informacoesArquivo = parametros.shift();
-	const {
-		file_id,
-		file_path,
-	} = informacoesArquivo;
+	const { file_id } = informacoesArquivo;
 
-	informacoesArquivo.file_downloaded = `./arquivos/${file_id}.pdf`;
+	bot.getFile( file_id )
+		.then( ( respGet ) => {
+			informacoesArquivo.file_downloaded = `./arquivos/${file_id}.pdf`;
 
-	const file = fs.createWriteStream( informacoesArquivo.file_downloaded );
+			const file = fs.createWriteStream( informacoesArquivo.file_downloaded );
 
-	const req = http.get( `https://api.telegram.org/file/bot${config.tokenBot}/${file_path}`, ( res ) => {
-		res.pipe( file );
+			const req = http.get( `https://api.telegram.org/file/bot${config.tokenBot}/${respGet.file_path}`, ( res ) => {
+				res.pipe( file );
 
-		callback( informacoesArquivo );
-	});
+				callback( informacoesArquivo );
+			});	
+		})
+		.catch( ( err ) => {
+			console.log( ' -- Erro tentando pegar informações de arquivo', file_id, err );
+
+			callback([ 'Não consigo acessar as informações deste arquivo.', 'Me envie novamente!' ]);
+		});
 }
 
 const msg = ( opt ) => {
@@ -178,11 +189,11 @@ const msg = ( opt ) => {
 						return;
 					}
 
+					console.log( ' --- informações recebidas apos converter PDF2Text', resp.length );
+
 					const processado = processarPDF( resp );
 
-//					console.log( ' *** Extrato processado ', processado );
-
-					opt.callback( JSON.stringify( processado ) );
+					opt.callback( `Extrato com ${processado.length} registros!` );
 				}
 			});
 		}
@@ -210,11 +221,38 @@ module.exports = {
 				break;
 
 			case 'p2t':
-				pdfToText( opt );
+				const parametros = [{ file_downloaded: `./arquivos/${opt.parametros[0]}.pdf` }];
+
+				pdfToText({
+					...opt,
+					parametros,
+					callback: ( resp, error ) => {
+						if ( error ) {
+							opt.callback( resp );
+
+							return;
+						}
+
+						console.log( ' --- informações recebidas apos converter PDF2Text', resp.length );
+
+						const processado = processarPDF( resp );
+
+						processado.forEach( async reg => await opt.db.get( 'extrato' ).push( reg ).write() );
+
+						opt.callback( `Extrato com ${processado.length} registros!` );
+					}
+				});
+
 				break;
 
 			case 'msg':
 				msg( opt );
+				break;
+
+			case 'tst':
+				console.log( opt.db.get( 'extrato' ).value() );
+				opt.callback( `Teste ae!` );
+
 				break;
 
 			default:
