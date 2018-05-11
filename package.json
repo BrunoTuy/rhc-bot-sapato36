@@ -2,6 +2,9 @@
   "name": "rhc-agenda-bot",
   "version": "0.1.0",
   "description": "Bot para listar agenda do raul",
+  "scripts": {
+    "dev": "nodemon --ignore banco.json"
+  },
   "contributors": [
     {
       "name": "Bruno Murta Tuy",
